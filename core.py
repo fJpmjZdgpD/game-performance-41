@@ -1,43 +1,19 @@
+import requests
 import time
 
-class GameEngine:
-    def __init__(self):
-        self.entities = []
-        self.running = False
+class NetworkError(Exception):
+    pass
 
-    def add_entity(self, entity):
-        self.entities.append(entity)
-
-    def start(self):
-        self.running = True
-        self.loop()
-
-    def loop(self):
-        last_time = time.time()
-        while self.running:
-            current_time = time.time()
-            delta_time = current_time - last_time
-            last_time = current_time
-            self.update(delta_time)
-            self.render()
-
-    def update(self, delta_time):
-        for entity in self.entities:
-            entity.update(delta_time)
-
-    def render(self):
-        for entity in self.entities:
-            entity.render()
-
-    def stop(self):
-        self.running = False
-
-class GameEntity:
-    def __init__(self, name):
-        self.name = name
-
-    def update(self, delta_time):
-        pass
-
-    def render(self):
-        pass
+def retry_request(url, max_retries=5, backoff_factor=1):
+    retries = 0
+    while retries < max_retries:
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            raise NetworkError(f'HTTP error occurred: {http_err}')
+        except requests.exceptions.RequestException:
+            retries += 1
+            time.sleep(backoff_factor * (2 ** retries))
+    raise NetworkError(f'Max retries reached for {url}')
