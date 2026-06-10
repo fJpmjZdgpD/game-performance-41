@@ -1,30 +1,24 @@
-import random
-import math
+import numpy as np
 
-def clamp(value, min_value, max_value):
-    return max(min(value, max_value), min_value)
-
-
-def interpolate(start, end, alpha):
-    return start + (end - start) * alpha
+def normalize_array(arr):
+    return (arr - np.min(arr)) / (np.max(arr) - np.min(arr)) if np.max(arr) - np.min(arr) != 0 else arr
 
 
-def rand_range(min_val, max_val):
-    return random.uniform(min_val, max_val)
+def average_score(scores):
+    return np.mean(scores)
 
 
-def distance(point1, point2):
-    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+def filter_high_scores(scores, threshold):
+    return [score for score in scores if score > threshold]
 
 
-def random_choice(items):
-    return random.choice(items)
+def sort_scores(scores):
+    return sorted(scores, reverse=True)
 
 
-def is_within_bounds(value, bounds):
-    return bounds[0] <= value <= bounds[1]
+def convert_to_percentage(score, total):
+    return (score / total) * 100 if total > 0 else 0
 
 
-def normalize_vector(vector):
-    length = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
-    return (vector[0] / length, vector[1] / length) if length > 0 else (0, 0)
+def is_valid_score(score):
+    return 0 <= score <= 100
