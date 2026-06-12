@@ -1,26 +1,19 @@
 import random
+import math
 
-class GameHelpers:
-    @staticmethod
-    def random_choice(choices):
-        return random.choice(choices)
+def calculate_distance(point1, point2):
+    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
 
-    @staticmethod
-    def calculate_distance(pos1, pos2):
-        return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
+def generate_random_position(x_range, y_range):
+    x = random.uniform(*x_range)
+    y = random.uniform(*y_range)
+    return (x, y)
 
-    @staticmethod
-    def clamp(value, min_value, max_value):
-        return max(min_value, min(value, max_value))
+def clamp(value, min_value, max_value):
+    return max(min(value, max_value), min_value)
 
-    @staticmethod
-    def lerp(start, end, t):
-        return start + (end - start) * t
+def is_on_screen(position, screen_size):
+    return 0 <= position[0] <= screen_size[0] and 0 <= position[1] <= screen_size[1]
 
-    @staticmethod
-    def get_random_int(min_value, max_value):
-        return random.randint(min_value, max_value)
-
-    @staticmethod
-    def split_string(text, delimiter=' '):
-        return text.split(delimiter)
+def lerp(start, end, t):
+    return start + (end - start) * t
