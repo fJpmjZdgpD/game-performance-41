@@ -1,24 +1,26 @@
-import numpy as np
+import random
 
-def normalize_array(arr):
-    return (arr - np.min(arr)) / (np.max(arr) - np.min(arr)) if np.max(arr) - np.min(arr) != 0 else arr
+class GameHelpers:
+    @staticmethod
+    def random_choice(choices):
+        return random.choice(choices)
 
+    @staticmethod
+    def calculate_distance(pos1, pos2):
+        return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
 
-def average_score(scores):
-    return np.mean(scores)
+    @staticmethod
+    def clamp(value, min_value, max_value):
+        return max(min_value, min(value, max_value))
 
+    @staticmethod
+    def lerp(start, end, t):
+        return start + (end - start) * t
 
-def filter_high_scores(scores, threshold):
-    return [score for score in scores if score > threshold]
+    @staticmethod
+    def get_random_int(min_value, max_value):
+        return random.randint(min_value, max_value)
 
-
-def sort_scores(scores):
-    return sorted(scores, reverse=True)
-
-
-def convert_to_percentage(score, total):
-    return (score / total) * 100 if total > 0 else 0
-
-
-def is_valid_score(score):
-    return 0 <= score <= 100
+    @staticmethod
+    def split_string(text, delimiter=' '):
+        return text.split(delimiter)
