@@ -1,27 +1,30 @@
-import time
-import requests
-from functools import wraps
+import random
+import logging
 
-class NetworkError(Exception):
+logger = logging.getLogger(__name__)
+
+class InvalidInputError(Exception):
     pass
 
-def retry_on_failure(retries=3, delay=2):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            for attempt in range(retries):
-                try:
-                    return func(*args, **kwargs)
-                except (requests.RequestException, NetworkError) as e:
-                    if attempt < retries - 1:
-                        time.sleep(delay)
-                    else:
-                        raise NetworkError(f'Operation failed after {retries} attempts: {e}')
-        return wrapper
-    return decorator
+class InvalidRangeError(Exception):
+    pass
 
-@retry_on_failure(retries=5, delay=1)
-def fetch_data(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
+def get_random_number(min_value, max_value):
+    if not (isinstance(min_value, int) and isinstance(max_value, int)):
+        logger.error("Both min_value and max_value must be integers.")
+        raise InvalidInputError("Input values must be integers.")
+    if min_value >= max_value:
+        logger.error("min_value must be less than max_value.")
+        raise InvalidRangeError("min_value must be less than max_value.")
+    return random.randint(min_value, max_value)
+
+def safe_divide(numerator, denominator):
+    try:
+        return numerator / denominator
+    except ZeroDivisionError:
+        logger.error("Attempted division by zero.")
+        return float('inf')
+    except TypeError:
+        logger.error("Both numerator and denominator must be numbers.")
+        raise InvalidInputError("Inputs must be numeric.")
+
