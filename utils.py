@@ -1,30 +1,28 @@
-import random
-import logging
+import json
 
-logger = logging.getLogger(__name__)
+def load_game_data(filepath):
+    with open(filepath, 'r') as file:
+        return json.load(file)
 
-class InvalidInputError(Exception):
-    pass
 
-class InvalidRangeError(Exception):
-    pass
+def save_game_data(filepath, data):
+    with open(filepath, 'w') as file:
+        json.dump(data, file, indent=4)
 
-def get_random_number(min_value, max_value):
-    if not (isinstance(min_value, int) and isinstance(max_value, int)):
-        logger.error("Both min_value and max_value must be integers.")
-        raise InvalidInputError("Input values must be integers.")
-    if min_value >= max_value:
-        logger.error("min_value must be less than max_value.")
-        raise InvalidRangeError("min_value must be less than max_value.")
-    return random.randint(min_value, max_value)
 
-def safe_divide(numerator, denominator):
-    try:
-        return numerator / denominator
-    except ZeroDivisionError:
-        logger.error("Attempted division by zero.")
-        return float('inf')
-    except TypeError:
-        logger.error("Both numerator and denominator must be numbers.")
-        raise InvalidInputError("Inputs must be numeric.")
+def update_game_data(filepath, new_data):
+    data = load_game_data(filepath)
+    data.update(new_data)
+    save_game_data(filepath, data)
 
+
+def delete_game_data(filepath, keys):
+    data = load_game_data(filepath)
+    for key in keys:
+        data.pop(key, None)
+    save_game_data(filepath, data)
+
+
+def validate_game_data(data):
+    required_keys = ['title', 'genre', 'release_date']
+    return all(key in data for key in required_keys)
