@@ -1,32 +1,34 @@
 import logging
 
 
-class GameLogger:
-    def __init__(self, name):
-        self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        ch.setFormatter(formatter)
-        self.logger.addHandler(ch)
+def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
+    """Sets up a logger with the specified name and logging level.
 
-    def debug(self, message):
-        self.logger.debug(message)
+    Args:
+        name (str): The name for the logger.
+        level (int): The logging level (default: logging.INFO).
 
-    def info(self, message):
-        self.logger.info(message)
+    Returns:
+        logging.Logger: Configured logger instance.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
 
-    def warning(self, message):
-        self.logger.warning(message)
+    handler = logging.StreamHandler()
+    handler.setLevel(level)
 
-    def error(self, message):
-        self.logger.error(message)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
-    def critical(self, message):
-        self.logger.critical(message)
+    return logger
 
 
-if __name__ == '__main__':
-    game_logger = GameLogger('GamePerformance')
-    game_logger.info('Logger initialized.')
+def log_exception(logger: logging.Logger, exception: Exception) -> None:
+    """Logs an exception message using the provided logger.
+
+    Args:
+        logger (logging.Logger): The logger instance to use.
+        exception (Exception): The exception to log.
+    """
+    logger.error('An exception occurred', exc_info=exception)
