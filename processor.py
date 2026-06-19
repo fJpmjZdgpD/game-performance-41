@@ -1,28 +1,27 @@
-import sys
+from typing import List, Dict
 
-def process_input(user_input):
-    valid_inputs = {'start', 'stop', 'pause', 'resume'}
-    if user_input not in valid_inputs:
-        raise ValueError('Invalid input provided.')
-    return user_input
+class GameProcessor:
+    def __init__(self, players: List[str]) -> None:
+        self.players = players
+        self.scores: Dict[str, int] = {player: 0 for player in players}
 
-def main_loop():
-    while True:
-        try:
-            user_input = input('Enter command: ').strip().lower()
-            command = process_input(user_input)
-            if command == 'start':
-                print('Game started.')
-            elif command == 'stop':
-                print('Game stopped.')
-                break
-            elif command == 'pause':
-                print('Game paused.')
-            elif command == 'resume':
-                print('Game resumed.')
-        except ValueError as e:
-            print(e)
-            print('Please try again.')
+    def update_score(self, player: str, points: int) -> None:
+        if player in self.scores:
+            self.scores[player] += points
 
+    def get_scores(self) -> Dict[str, int]:
+        return self.scores
+
+    def reset_scores(self) -> None:
+        self.scores = {player: 0 for player in self.players}
+
+    def get_winner(self) -> str:
+        return max(self.scores, key=self.scores.get)
+
+# Example usage
 if __name__ == '__main__':
-    main_loop()
+    game = GameProcessor(['Alice', 'Bob', 'Charlie'])
+    game.update_score('Alice', 10)
+    game.update_score('Bob', 5)
+    print(game.get_scores())
+    print('Winner:', game.get_winner())
