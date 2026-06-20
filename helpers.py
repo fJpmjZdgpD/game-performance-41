@@ -1,30 +1,29 @@
 import random
-import numpy as np
 
-def generate_random_position(max_x, max_y):
-    return (random.randint(0, max_x), random.randint(0, max_y))
+def get_random_item(items):
+    return random.choice(items)
 
 
-def calculate_distance(point1, point2):
-    return np.linalg.norm(np.array(point1) - np.array(point2))
+def shuffle_list(items):
+    random.shuffle(items)
+    return items
+
+
+def calculate_average(scores):
+    return sum(scores) / len(scores) if scores else 0
 
 
 def clamp(value, min_value, max_value):
-    return max(min_value, min(value, max_value))
+    return max(min(value, max_value), min_value)
 
 
-def lerp(start, end, t):
-    return start + (end - start) * t
+def load_json(file_path):
+    import json
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 
-def is_power_of_two(n):
-    return (n & (n - 1)) == 0 and n > 0
-
-
-def load_image(image_path):
-    from PIL import Image
-    return Image.open(image_path)
-
-
-def save_image(image, path):
-    image.save(path)
+def save_json(file_path, data):
+    import json
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
