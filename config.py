@@ -1,31 +1,32 @@
 import json
 import os
 
+DEFAULTS = {
+    'window_size': (800, 600),
+    'fullscreen': False,
+    'fps': 60,
+    'volume': 0.5,
+}
+
 class ConfigLoader:
-    def __init__(self, default_config):
-        self.default_config = default_config
-        self.config = self.load_config()
+    def __init__(self, filename='config.json'):
+        self.filename = filename
+        self.config = DEFAULTS.copy()
+        self.load_config()
 
     def load_config(self):
-        config_file = 'config.json'
-        if os.path.exists(config_file):
-            with open(config_file, 'r') as f:
-                return {**self.default_config, **json.load(f)}
-        return self.default_config
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r') as file:
+                user_config = json.load(file)
+                self.config.update(user_config)
 
-    def get(self, key):
-        return self.config.get(key, None)
+    def get(self, key, default=None):
+        return self.config.get(key, default)
 
     def set(self, key, value):
         self.config[key] = value
-        with open('config.json', 'w') as f:
-            json.dump(self.config, f, indent=4)
+        self.save_config()
 
-# Example defaults
-default_config = {
-    'resolution': '1920x1080',
-    'volume': 75,
-    'difficulty': 'normal'
-}
-
-config_loader = ConfigLoader(default_config)
+    def save_config(self):
+        with open(self.filename, 'w') as file:
+            json.dump(self.config, file, indent=4)
