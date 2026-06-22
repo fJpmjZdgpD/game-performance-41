@@ -1,20 +1,31 @@
+import json
 import os
 
-class Config:
-    DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
-    DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///default.db')
-    SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret')
-    MAX_CONNECTIONS = int(os.getenv('MAX_CONNECTIONS', 100))
+class ConfigLoader:
+    def __init__(self, default_config):
+        self.default_config = default_config
+        self.config = self.load_config()
 
-    @staticmethod
-    def init_app(app):
-        app.config['DEBUG'] = Config.DEBUG
-        app.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
-        app.config['SECRET_KEY'] = Config.SECRET_KEY
-        app.config['MAX_CONNECTIONS'] = Config.MAX_CONNECTIONS
-        
-    @classmethod
-    def from_env(cls):
-        return cls()
+    def load_config(self):
+        config_file = 'config.json'
+        if os.path.exists(config_file):
+            with open(config_file, 'r') as f:
+                return {**self.default_config, **json.load(f)}
+        return self.default_config
 
-config = Config.from_env()
+    def get(self, key):
+        return self.config.get(key, None)
+
+    def set(self, key, value):
+        self.config[key] = value
+        with open('config.json', 'w') as f:
+            json.dump(self.config, f, indent=4)
+
+# Example defaults
+default_config = {
+    'resolution': '1920x1080',
+    'volume': 75,
+    'difficulty': 'normal'
+}
+
+config_loader = ConfigLoader(default_config)
