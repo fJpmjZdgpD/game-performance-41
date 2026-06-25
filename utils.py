@@ -1,28 +1,27 @@
-import json
+import time
+import random
 
-def load_game_data(filepath):
-    with open(filepath, 'r') as file:
-        return json.load(file)
+class NetworkError(Exception):
+    pass
 
+def retry(func, retries=3, delay=1):
+    for attempt in range(retries):
+        try:
+            return func()
+        except NetworkError:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                raise
 
-def save_game_data(filepath, data):
-    with open(filepath, 'w') as file:
-        json.dump(data, file, indent=4)
+def network_operation():
+    if random.choice([True, False]):
+        raise NetworkError('Simulated network failure')
+    return 'Network operation successful'
 
-
-def update_game_data(filepath, new_data):
-    data = load_game_data(filepath)
-    data.update(new_data)
-    save_game_data(filepath, data)
-
-
-def delete_game_data(filepath, keys):
-    data = load_game_data(filepath)
-    for key in keys:
-        data.pop(key, None)
-    save_game_data(filepath, data)
-
-
-def validate_game_data(data):
-    required_keys = ['title', 'genre', 'release_date']
-    return all(key in data for key in required_keys)
+if __name__ == '__main__':
+    try:
+        result = retry(network_operation)
+        print(result)
+    except NetworkError as e:
+        print(f'Operation failed after retries: {e}')
