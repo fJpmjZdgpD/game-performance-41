@@ -1,29 +1,23 @@
-from typing import Dict, Any
+import time
+import requests
+from requests.exceptions import RequestException
 
-class GameHandler:
-    def __init__(self, game_data: Dict[str, Any]) -> None:
-        self.game_data = game_data
+def retry_request(url, retries=3, backoff=1):
+    for attempt in range(retries):
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except RequestException:
+            if attempt < retries - 1:
+                time.sleep(backoff * (2 ** attempt))
+            else:
+                raise
 
-    def start_game(self) -> None:
-        print('Starting the game...')
-
-    def pause_game(self) -> None:
-        print('Game paused.')
-
-    def resume_game(self) -> None:
-        print('Resuming the game...')
-
-    def end_game(self) -> None:
-        print('Ending the game...')
-
-    def get_game_status(self) -> str:
-        return 'Game is currently running.'
-
-# Example usage
 if __name__ == '__main__':
-    game = GameHandler({'level': 1, 'score': 0})
-    game.start_game()
-    print(game.get_game_status())
-    game.pause_game()
-    game.resume_game()
-    game.end_game()
+    url = 'https://api.example.com/data'
+    try:
+        data = retry_request(url)
+        print(data)
+    except RequestException as e:
+        print(f'Network request failed: {e}')
