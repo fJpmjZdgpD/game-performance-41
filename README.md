@@ -1,17 +1,17 @@
 # Game Performance 41
 
-Game Performance 41 is a Python-based tool designed to analyze and enhance the performance of video games through efficient metrics collection and benchmarking. By providing real-time insights and performance indicators, developers can optimize their games for a smoother, more engaging player experience.
+Game Performance 41 is a Python-based tool designed to analyze and enhance the performance of gaming applications. By providing detailed insights into frame rates, memory usage, and resource allocation, developers can fine-tune their games for optimal player experience.
 
 ## Features
 
-- **Real-time Metrics Collection**: Instantly gather vital performance data, including frame rates, CPU/GPU usage, and memory consumption, while running any game.
-- **Customizable Benchmarking**: Set specific benchmarks for different game elements or scenarios, allowing for tailored performance evaluations.
-- **Data Visualization**: Generate comprehensive reports with visual graphs and charts that simplify the interpretation of performance analytics.
-- **Cross-Platform Compatibility**: Works seamlessly across major operating systems, including Windows, macOS, and Linux, making it accessible to all developers.
+- **Frame Rate Analysis**: Monitor and analyze frame rates in real-time to identify performance bottlenecks.
+- **Memory Usage Tracking**: Assess memory consumption and detect leaks, helping improve overall stability and efficiency.
+- **Resource Allocation Insights**: Visualize resource usage across different components of your game, allowing for targeted optimizations.
+- **Compatibility with Popular Game Engines**: Easily integrate with popular frameworks like Pygame and Unity through Python scripting.
 
 ## Installation
 
-To get started with Game Performance 41, clone the repository and install the required dependencies:
+To install Game Performance 41, ensure you have Python 3.6 or above installed. Then, clone the repository and install required packages using pip:
 
 ```bash
 git clone https://github.com/Developer/game-performance-41.git
@@ -19,22 +19,33 @@ cd game-performance-41
 pip install -r requirements.txt
 ```
 
-Make sure you have Python 3.6 or higher installed on your system.
-
 ## Basic Usage
 
-After the installation, you can begin using Game Performance 41 with the following command:
+After installation, you can start profiling your game by importing the library into your Python project. Here's a simple example demonstrating how to monitor frame rates:
 
-```bash
-python performance_analyzer.py --game "YourGame.exe" --duration 60
+```python
+import game_performance
+
+# Initialize performance tracker
+performance_tracker = game_performance.Tracker()
+
+# Start tracking
+performance_tracker.start()
+
+# Game loop
+while running:
+    # Your game logic here
+    performance_tracker.track_frame()
+
+# Stop tracking
+performance_tracker.stop()
+
+# Display performance report
+performance_tracker.display_report()
 ```
 
-This command will analyze the specified game for 60 seconds, collecting relevant performance metrics that will be saved to `performance_report.csv`.
+This will give you a detailed report on your game's frame rate and performance metrics once the game loop ends, enabling you to make informed optimizations.
 
-## License
+![MIT License](https://img.shields.io/badge/license-MIT-brightgreen) 
 
-![MIT License](https://img.shields.io/badge/license-MIT-brightgreen)
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-Explore, analyze, and optimize your gaming projects with Game Performance 41 – where performance meets perfection!
+Explore, enhance, and enjoy building better games with Game Performance 41!
