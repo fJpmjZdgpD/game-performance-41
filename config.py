@@ -1,16 +1,15 @@
-import json
 import os
 
-def load_config(file_path='config.json', defaults=None):
-    if defaults is None:
-        defaults = {}
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as f:
-            config = json.load(f)
-            return {**defaults, **config}
-    return defaults
+class Config:
+    DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+    DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite:///default.db')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'supersecretkey')
+    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
-if __name__ == '__main__':
-    defaults = {'setting1': 'default1', 'setting2': 'default2'}
-    config = load_config(defaults=defaults)
-    print(config)
+    @classmethod
+    def init_app(cls, app):
+        app.config['DEBUG'] = cls.DEBUG
+        app.config['SQLALCHEMY_DATABASE_URI'] = cls.DATABASE_URI
+        app.config['SECRET_KEY'] = cls.SECRET_KEY
+        app.config['ALLOWED_HOSTS'] = cls.ALLOWED_HOSTS
+
