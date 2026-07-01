@@ -1,15 +1,26 @@
+import json
 import os
 
-class Config:
-    DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-    DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite:///default.db')
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'supersecretkey')
-    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+class ConfigLoader:
+    def __init__(self, default_config):
+        self.default_config = default_config
+        self.config = self.load_config()
 
-    @classmethod
-    def init_app(cls, app):
-        app.config['DEBUG'] = cls.DEBUG
-        app.config['SQLALCHEMY_DATABASE_URI'] = cls.DATABASE_URI
-        app.config['SECRET_KEY'] = cls.SECRET_KEY
-        app.config['ALLOWED_HOSTS'] = cls.ALLOWED_HOSTS
+    def load_config(self):
+        config_path = 'config.json'
+        if os.path.exists(config_path):
+            with open(config_path, 'r') as f:
+                user_config = json.load(f)
+            return {**self.default_config, **user_config}
+        return self.default_config
 
+    def get(self, key, default=None):
+        return self.config.get(key, default)
+
+# Example usage
+if __name__ == '__main__':
+    defaults = {'setting1': True, 'setting2': 'default_value'}
+    config_loader = ConfigLoader(defaults)
+    print(config_loader.get('setting1'))
+    print(config_loader.get('setting2'))
+    print(config_loader.get('non_existent', 'fallback'))
