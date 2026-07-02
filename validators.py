@@ -1,24 +1,23 @@
 import re
 
-def is_valid_email(email):
-    regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    return re.match(regex, email) is not None
-
 def is_valid_username(username):
-    return 3 <= len(username) <= 20 and username.isalnum()
+    return bool(re.match(r'^[a-zA-Z0-9]{3,20}$', username))
 
-def is_valid_score(score):
-    return isinstance(score, (int, float)) and 0 <= score <= 100
 
-def is_non_empty_string(s):
-    return isinstance(s, str) and bool(s.strip())
+def is_valid_email(email):
+    return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
 
-def is_valid_game_id(game_id):
-    return isinstance(game_id, int) and game_id > 0
 
-if __name__ == '__main__':
-    print(is_valid_email('test@example.com'))  # True
-    print(is_valid_username('user1'))  # True
-    print(is_valid_score(85.5))  # True
-    print(is_non_empty_string(' Hello '))  # True
-    print(is_valid_game_id(1))  # True
+def is_valid_positive_integer(value):
+    return isinstance(value, int) and value > 0
+
+
+def validate_player_data(player_data):
+    errors = []
+    if not is_valid_username(player_data.get('username')):
+        errors.append('Invalid username')
+    if not is_valid_email(player_data.get('email')):
+        errors.append('Invalid email')
+    if not is_valid_positive_integer(player_data.get('score')):
+        errors.append('Score must be a positive integer')
+    return errors
