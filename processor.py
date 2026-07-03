@@ -1,27 +1,28 @@
-from typing import List, Dict
+import time
+import requests
 
-class GameProcessor:
-    def __init__(self, players: List[str]) -> None:
-        self.players = players
-        self.scores: Dict[str, int] = {player: 0 for player in players}
+class NetworkRetry:
+    def __init__(self, retries=3, backoff=2):
+        self.retries = retries
+        self.backoff = backoff
 
-    def update_score(self, player: str, points: int) -> None:
-        if player in self.scores:
-            self.scores[player] += points
+    def retry_request(self, func, *args, **kwargs):
+        attempt = 0
+        while attempt < self.retries:
+            try:
+                return func(*args, **kwargs)
+            except requests.RequestException as e:
+                attempt += 1
+                if attempt >= self.retries:
+                    raise
+                time.sleep(self.backoff ** attempt)
 
-    def get_scores(self) -> Dict[str, int]:
-        return self.scores
+def fetch_data(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
 
-    def reset_scores(self) -> None:
-        self.scores = {player: 0 for player in self.players}
-
-    def get_winner(self) -> str:
-        return max(self.scores, key=self.scores.get)
-
-# Example usage
 if __name__ == '__main__':
-    game = GameProcessor(['Alice', 'Bob', 'Charlie'])
-    game.update_score('Alice', 10)
-    game.update_score('Bob', 5)
-    print(game.get_scores())
-    print('Winner:', game.get_winner())
+    retrier = NetworkRetry()
+    data = retrier.retry_request(fetch_data, 'https://api.example.com/data')
+    print(data)
