@@ -1,22 +1,25 @@
-FPS_TARGET = 60
-MAX_PLAYERS = 100
+FPS_LIMIT = 60
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT
+PLAYER_SPEED = 5
+ENEMY_SPEED = 3
 GRAVITY = 9.81
-PLAYER_SPEED = 5.0
-JUMP_HEIGHT = 1.5
-LEVELS = ['easy', 'medium', 'hard']
-ITEMS = {'health_potion': 50, 'mana_potion': 30}
-ENEMY_TYPES = ['goblin', 'orc', 'dragon']
-
-def get_max_items():
-    return sum(ITEMS.values())
-
-def calculate_velocity(speed, time):
-    return speed * time + 0.5 * GRAVITY * time ** 2
-
-# Network settings
-SERVER_IP = '192.168.1.1'
-SERVER_PORT = 8080
-
-# Game settings
-DEBUG_MODE = False
-MAX_FRAME_TIME = 1.0 / FPS_TARGET
+JUMP_HEIGHT = 10
+LEVELS = {
+    1: {'name': 'Forest', 'difficulty': 1},
+    2: {'name': 'Desert', 'difficulty': 2},
+    3: {'name': 'Mountain', 'difficulty': 3}
+}
+COLORS = {
+    'WHITE': (255, 255, 255),
+    'BLACK': (0, 0, 0),
+    'RED': (255, 0, 0),
+    'GREEN': (0, 255, 0),
+    'BLUE': (0, 0, 255)
+}
+SOUNDS = {
+    'jump': 'assets/sounds/jump.wav',
+    'explosion': 'assets/sounds/explosion.wav',
+    'game_over': 'assets/sounds/game_over.wav'
+}
