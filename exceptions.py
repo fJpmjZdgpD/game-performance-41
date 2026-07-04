@@ -1,25 +1,25 @@
 class GameError(Exception):
-    pass
+    """Base class for exceptions in this game."""
+
+class AssetLoadError(GameError):
+    """Exception raised for errors in asset loading."""
 
 class InvalidInputError(GameError):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
-
-class ResourceNotFoundError(GameError):
-    def __init__(self, resource):
-        self.resource = resource
-        self.message = f'Resource not found: {self.resource}'
-        super().__init__(self.message)
-
-class NotAuthorizedError(GameError):
-    def __init__(self, action):
-        self.action = action
-        self.message = f'Not authorized to perform action: {self.action}'
-        super().__init__(self.message)
+    """Exception raised for invalid user input."""
 
 class GameStateError(GameError):
-    def __init__(self, state):
-        self.state = state
-        self.message = f'Invalid game state: {self.state}'
-        super().__init__(self.message)
+    """Exception raised for errors related to game state."""
+
+class ConfigurationError(GameError):
+    """Exception raised for configuration errors."""
+
+def handle_error(error):
+    if isinstance(error, AssetLoadError):
+        return {"error": "Failed to load game assets."}
+    elif isinstance(error, InvalidInputError):
+        return {"error": "Invalid input provided by user."}
+    elif isinstance(error, GameStateError):
+        return {"error": "Game state is invalid or corrupted."}
+    elif isinstance(error, ConfigurationError):
+        return {"error": "Invalid configuration settings detected."}
+    return {"error": "An unknown error occurred."}
