@@ -1,28 +1,29 @@
-import time
-import requests
+import logging
+from validators import validate_input
 
-class NetworkRetry:
-    def __init__(self, retries=3, backoff=2):
-        self.retries = retries
-        self.backoff = backoff
+logger = logging.getLogger(__name__)
 
-    def retry_request(self, func, *args, **kwargs):
-        attempt = 0
-        while attempt < self.retries:
-            try:
-                return func(*args, **kwargs)
-            except requests.RequestException as e:
-                attempt += 1
-                if attempt >= self.retries:
-                    raise
-                time.sleep(self.backoff ** attempt)
+class GameProcessor:
+    def __init__(self):
+        self.running = True
 
-def fetch_data(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
+    def process_input(self, user_input):
+        if validate_input(user_input):
+            self.handle_input(user_input)
+        else:
+            logger.warning(f'Invalid input: {user_input}')
+
+    def handle_input(self, user_input):
+        # Handle the valid input accordingly
+        logger.info(f'Processing input: {user_input}')
+
+    def main_loop(self):
+        while self.running:
+            user_input = input('Enter command: ')
+            self.process_input(user_input)
+            if user_input.lower() == 'exit':
+                self.running = False
 
 if __name__ == '__main__':
-    retrier = NetworkRetry()
-    data = retrier.retry_request(fetch_data, 'https://api.example.com/data')
-    print(data)
+    processor = GameProcessor()
+    processor.main_loop()
