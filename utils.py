@@ -1,28 +1,38 @@
-import time
-import random
+import numpy as np
 
-class NetworkError(Exception):
-    pass
 
-def retry_operation(func, retries=3, delay=2):
-    for attempt in range(retries):
-        try:
-            return func()
-        except NetworkError:
-            if attempt < retries - 1:
-                time.sleep(delay)
-                delay *= 2
-            else:
-                raise
+def calculate_distance(point_a, point_b):
+    return np.linalg.norm(np.array(point_a) - np.array(point_b))
 
-def mock_network_operation():
-    if random.choice([True, False]):
-        raise NetworkError('Network failure')
-    return 'Success!'
 
-if __name__ == '__main__':
-    try:
-        result = retry_operation(mock_network_operation)
-        print(result)
-    except NetworkError as e:
-        print(f'Operation failed: {e}')
+def clamp(value, min_value, max_value):
+    return max(min(value, max_value), min_value)
+
+
+def interpolate(value_a, value_b, t):
+    return (1 - t) * value_a + t * value_b
+
+
+def lerp(start, end, fraction):
+    return start + (end - start) * fraction
+
+
+def is_power_of_two(number):
+    return (number != 0) and (number & (number - 1)) == 0
+
+
+def random_choice(sequence):
+    return np.random.choice(sequence)
+
+
+def create_vector(x, y, z):
+    return np.array([x, y, z])
+
+
+def distance_squared(point_a, point_b):
+    return (point_a[0] - point_b[0]) ** 2 + (point_a[1] - point_b[1]) ** 2 + (point_a[2] - point_b[2]) ** 2
+
+
+def normalize(vector):
+    norm = np.linalg.norm(vector)
+    return vector / norm if norm > 0 else vector
