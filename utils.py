@@ -1,38 +1,29 @@
-import numpy as np
-
-
-def calculate_distance(point_a, point_b):
-    return np.linalg.norm(np.array(point_a) - np.array(point_b))
+import random
+import math
 
 
 def clamp(value, min_value, max_value):
     return max(min(value, max_value), min_value)
 
 
-def interpolate(value_a, value_b, t):
-    return (1 - t) * value_a + t * value_b
+def lerp(start, end, t):
+    return start + (end - start) * t
 
 
-def lerp(start, end, fraction):
-    return start + (end - start) * fraction
+def random_choice(choices):
+    return random.choice(choices)
 
 
-def is_power_of_two(number):
-    return (number != 0) and (number & (number - 1)) == 0
+def distance(point1, point2):
+    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
 
 
-def random_choice(sequence):
-    return np.random.choice(sequence)
+def angle_between(point1, point2):
+    return math.atan2(point2[1] - point1[1], point2[0] - point1[0])
 
 
-def create_vector(x, y, z):
-    return np.array([x, y, z])
-
-
-def distance_squared(point_a, point_b):
-    return (point_a[0] - point_b[0]) ** 2 + (point_a[1] - point_b[1]) ** 2 + (point_a[2] - point_b[2]) ** 2
-
-
-def normalize(vector):
-    norm = np.linalg.norm(vector)
-    return vector / norm if norm > 0 else vector
+def normalize_vector(vector):
+    length = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
+    if length == 0:
+        return (0, 0)
+    return (vector[0] / length, vector[1] / length)
