@@ -1,29 +1,19 @@
-import random
-import math
+import time
+import requests
 
+class NetworkError(Exception):
+    pass
 
-def clamp(value, min_value, max_value):
-    return max(min(value, max_value), min_value)
+def retry_request(func, retries=3, delay=1, *args, **kwargs):
+    for attempt in range(retries):
+        try:
+            return func(*args, **kwargs)
+        except requests.RequestException:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                raise NetworkError('Max retries exceeded')
 
-
-def lerp(start, end, t):
-    return start + (end - start) * t
-
-
-def random_choice(choices):
-    return random.choice(choices)
-
-
-def distance(point1, point2):
-    return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
-
-
-def angle_between(point1, point2):
-    return math.atan2(point2[1] - point1[1], point2[0] - point1[0])
-
-
-def normalize_vector(vector):
-    length = math.sqrt(vector[0] ** 2 + vector[1] ** 2)
-    if length == 0:
-        return (0, 0)
-    return (vector[0] / length, vector[1] / length)
+if __name__ == '__main__':
+    response = retry_request(requests.get, url='https://api.example.com/data')
+    print(response.json())
