@@ -1,50 +1,22 @@
-import numpy as np
+import json
+from typing import Any, Dict, List
 
-class GameEngine:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.entities = []
-        self.running = True
+def load_game_data(file_path: str) -> List[Dict[str, Any]]:
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
-    def add_entity(self, entity):
-        self.entities.append(entity)
 
-    def run(self):
-        while self.running:
-            self.update_entities()
-            self.render()
+def save_game_data(file_path: str, data: List[Dict[str, Any]]) -> None:
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
 
-    def update_entities(self):
-        for entity in self.entities:
-            entity.update()
 
-    def render(self):
-        frame = np.zeros((self.height, self.width, 3), dtype=np.uint8)
-        for entity in self.entities:
-            position = entity.get_position()
-            frame[position[1]:position[1]+entity.height,
-                  position[0]:position[0]+entity.width] += entity.color
-        self.display_frame(frame)
+def filter_game_data(data: List[Dict[str, Any]], key: str, value: Any) -> List[Dict[str, Any]]:
+    return [entry for entry in data if entry.get(key) == value]
 
-    def display_frame(self, frame):
-        # Placeholder for display implementation
-        pass
 
-class Entity:
-    def __init__(self, x, y, width, height, color):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
-
-    def update(self):
-        # Update entity logic
-        pass
-
-    def get_position(self):
-        return (self.x, self.y)
-
-engine = GameEngine(800, 600)
-engine.run()
+def aggregate_game_data(data: List[Dict[str, Any]], key: str) -> Dict[Any, int]:
+    result = {}
+    for entry in data:
+        result[entry[key]] = result.get(entry[key], 0) + 1
+    return result
