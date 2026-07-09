@@ -1,25 +1,22 @@
-FPS_LIMIT = 60
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1080
-ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+FPS = 60
+BACKGROUND_COLOR = (0, 0, 0)
+PLAYER_COLOR = (255, 255, 255)
+ENEMY_COLOR = (255, 0, 0)
 PLAYER_SPEED = 5
 ENEMY_SPEED = 3
-GRAVITY = 9.81
-JUMP_HEIGHT = 10
+ITEM_COLOR = (0, 255, 0)
+ITEM_RESPAWN_TIME = 5
+
+FONT_NAME = 'arial'
+FONT_SIZE = 24
+TEXT_COLOR = (255, 255, 255)
 LEVELS = {
-    1: {'name': 'Forest', 'difficulty': 1},
-    2: {'name': 'Desert', 'difficulty': 2},
-    3: {'name': 'Mountain', 'difficulty': 3}
+    1: {'enemies': 5, 'items': 2},
+    2: {'enemies': 10, 'items': 3},
+    3: {'enemies': 15, 'items': 4}
 }
-COLORS = {
-    'WHITE': (255, 255, 255),
-    'BLACK': (0, 0, 0),
-    'RED': (255, 0, 0),
-    'GREEN': (0, 255, 0),
-    'BLUE': (0, 0, 255)
-}
-SOUNDS = {
-    'jump': 'assets/sounds/jump.wav',
-    'explosion': 'assets/sounds/explosion.wav',
-    'game_over': 'assets/sounds/game_over.wav'
-}
+
+SOUND_VOLUME = 0.5
+MUSIC_VOLUME = 0.3
