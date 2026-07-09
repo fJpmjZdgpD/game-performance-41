@@ -1,19 +1,21 @@
-import time
-import requests
+import json
 
-class NetworkError(Exception):
-    pass
+def load_game_data(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
-def retry_request(func, retries=3, delay=1, *args, **kwargs):
-    for attempt in range(retries):
-        try:
-            return func(*args, **kwargs)
-        except requests.RequestException:
-            if attempt < retries - 1:
-                time.sleep(delay)
-            else:
-                raise NetworkError('Max retries exceeded')
 
-if __name__ == '__main__':
-    response = retry_request(requests.get, url='https://api.example.com/data')
-    print(response.json())
+def save_game_data(file_path, data):
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+
+
+def update_player_score(data, player_id, score):
+    if player_id in data:
+        data[player_id]['score'] += score
+    else:
+        data[player_id] = {'score': score}
+
+
+def get_top_players(data, top_n=5):
+    return sorted(data.items(), key=lambda x: x[1]['score'], reverse=True)[:top_n]
