@@ -1,25 +1,28 @@
-class GameError(Exception):
-    """Base class for exceptions in this game."""
+import time
+import random
 
-class AssetLoadError(GameError):
-    """Exception raised for errors in asset loading."""
+class NetworkError(Exception):
+    pass
 
-class InvalidInputError(GameError):
-    """Exception raised for invalid user input."""
+def retry_on_failure(max_retries=3, delay=1):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except NetworkError:
+                    if attempt < max_retries - 1:
+                        time.sleep(delay)
+                    else:
+                        raise
+        return wrapper
+    return decorator
 
-class GameStateError(GameError):
-    """Exception raised for errors related to game state."""
+@retry_on_failure(max_retries=5, delay=2)
+def fetch_data(url):
+    if random.choice([True, False]):
+        raise NetworkError('Failed to fetch data')
+    return {'data': 'Sample data from ' + url}
 
-class ConfigurationError(GameError):
-    """Exception raised for configuration errors."""
-
-def handle_error(error):
-    if isinstance(error, AssetLoadError):
-        return {"error": "Failed to load game assets."}
-    elif isinstance(error, InvalidInputError):
-        return {"error": "Invalid input provided by user."}
-    elif isinstance(error, GameStateError):
-        return {"error": "Game state is invalid or corrupted."}
-    elif isinstance(error, ConfigurationError):
-        return {"error": "Invalid configuration settings detected."}
-    return {"error": "An unknown error occurred."}
+if __name__ == '__main__':
+    print(fetch_data('http://example.com'))
