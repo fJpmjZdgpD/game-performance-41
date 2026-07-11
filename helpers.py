@@ -1,29 +1,17 @@
-import random
+import time
+import requests
+from requests.exceptions import RequestException
 
-def get_random_item(items):
-    return random.choice(items)
+def retry_network_operation(operation, retries=3, delay=1, *args, **kwargs):
+    for attempt in range(retries):
+        try:
+            return operation(*args, **kwargs)
+        except RequestException as e:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                raise e
 
-
-def shuffle_list(items):
-    random.shuffle(items)
-    return items
-
-
-def calculate_average(scores):
-    return sum(scores) / len(scores) if scores else 0
-
-
-def clamp(value, min_value, max_value):
-    return max(min(value, max_value), min_value)
-
-
-def load_json(file_path):
-    import json
-    with open(file_path, 'r') as file:
-        return json.load(file)
-
-
-def save_json(file_path, data):
-    import json
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+def fetch_data(url):
+    response = retry_network_operation(requests.get, url=url)
+    return response.json() if response.status_code == 200 else None
