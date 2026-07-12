@@ -1,29 +1,26 @@
-import logging
-from validators import validate_input
+import numpy as np
 
-logger = logging.getLogger(__name__)
+class GameDataProcessor:
+    def __init__(self, data):
+        self.data = data
 
-class GameProcessor:
-    def __init__(self):
-        self.running = True
+    def normalize_data(self):
+        max_value = np.max(self.data)
+        return self.data / max_value if max_value > 0 else self.data
 
-    def process_input(self, user_input):
-        if validate_input(user_input):
-            self.handle_input(user_input)
-        else:
-            logger.warning(f'Invalid input: {user_input}')
+    def filter_outliers(self, threshold=1.5):
+        q1 = np.percentile(self.data, 25)
+        q3 = np.percentile(self.data, 75)
+        iqr = q3 - q1
+        lower_bound = q1 - threshold * iqr
+        upper_bound = q3 + threshold * iqr
+        return self.data[(self.data >= lower_bound) & (self.data <= upper_bound)]
 
-    def handle_input(self, user_input):
-        # Handle the valid input accordingly
-        logger.info(f'Processing input: {user_input}')
+    def aggregate_scores(self):
+        return np.mean(self.data)
 
-    def main_loop(self):
-        while self.running:
-            user_input = input('Enter command: ')
-            self.process_input(user_input)
-            if user_input.lower() == 'exit':
-                self.running = False
-
-if __name__ == '__main__':
-    processor = GameProcessor()
-    processor.main_loop()
+    def process(self):
+        normalized = self.normalize_data()
+        filtered = self.filter_outliers()
+        avg_score = self.aggregate_scores()  
+        return avg_score, filtered
