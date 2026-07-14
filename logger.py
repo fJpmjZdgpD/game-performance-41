@@ -1,28 +1,15 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
-class GameLogger:
-    def __init__(self, name):
-        self.logger = logging.getLogger(name)
-        handler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
-        self.logger.setLevel(logging.INFO)
+def setup_logger(name, log_file, level=logging.INFO):
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler = RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=5)
+    handler.setFormatter(formatter)
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.addHandler(handler)
+    return logger
 
-    def debug(self, message):
-        self.logger.debug(message)
-
-    def info(self, message):
-        self.logger.info(message)
-
-    def warning(self, message):
-        self.logger.warning(message)
-
-    def error(self, message):
-        self.logger.error(message)
-
-    def critical(self, message):
-        self.logger.critical(message)
-
-logger = GameLogger('GamePerformance')
-logger.info('Logger initialized for game performance monitoring.')
+if __name__ == '__main__':
+    logger = setup_logger('game_performance', 'game_performance.log')
+    logger.info('Logger has been set up successfully.')
