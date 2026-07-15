@@ -1,33 +1,29 @@
 import random
-import numpy as np
+import math
 
-def clamp(value, min_value, max_value):
-    return max(min(value, max_value), min_value)
+def clamp(value, minimum, maximum):
+    return max(minimum, min(value, maximum))
 
 
-def random_choice(choices):
-    return random.choice(choices)
+def random_float(min_value, max_value):
+    return random.uniform(min_value, max_value)
+
+
+def distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
 
 def lerp(start, end, t):
     return start + (end - start) * t
 
 
-def distance(point_a, point_b):
-    return np.linalg.norm(np.array(point_a) - np.array(point_b))
+def fade_in(duration, elapsed):
+    if elapsed < duration:
+        return elapsed / duration
+    return 1.0
 
 
-def is_power_of_two(n):
-    return (n != 0) and (n & (n - 1)) == 0
-
-
-def interpolate_colors(color_a, color_b, t):
-    return tuple(clamp(int(a + (b - a) * t), 0, 255) for a, b in zip(color_a, color_b))
-
-
-def degrees_to_radians(degrees):
-    return degrees * (np.pi / 180)
-
-
-def radians_to_degrees(radians):
-    return radians * (180 / np.pi)
+def fade_out(duration, elapsed):
+    if elapsed < duration:
+        return 1 - (elapsed / duration)
+    return 0.0
