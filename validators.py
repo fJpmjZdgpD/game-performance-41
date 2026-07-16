@@ -1,29 +1,28 @@
-import json
+def validate_player_id(player_id):
+    if not isinstance(player_id, int) or player_id < 0:
+        raise ValueError("Invalid player ID")
+    return True
 
-class Validator:
+def validate_score(score):
+    if not isinstance(score, (int, float)) or score < 0:
+        raise ValueError("Invalid score")
+    return True
+
+class GameValidator:
     @staticmethod
-    def validate_non_empty(data):
-        if not data:
-            raise ValueError('Data cannot be empty.')
+    def validate_game_data(game_data):
+        if not isinstance(game_data, dict):
+            raise ValueError("Game data must be a dictionary")
+        required_keys = ['player_id', 'score']
+        for key in required_keys:
+            if key not in game_data:
+                raise ValueError(f"Missing required key: {key}")
+        validate_player_id(game_data['player_id'])
+        validate_score(game_data['score'])
         return True
 
     @staticmethod
-    def validate_positive_integer(value):
-        if not isinstance(value, int) or value <= 0:
-            raise ValueError('Value must be a positive integer.')
+    def validate_level(level):
+        if not isinstance(level, int) or level < 1:
+            raise ValueError("Level must be a positive integer")
         return True
-
-    @staticmethod
-    def validate_json_string(json_string):
-        try:
-            json.loads(json_string)
-        except (ValueError, TypeError):
-            raise ValueError('Invalid JSON string.')
-        return True
-
-    @staticmethod
-    def validate_range(value, min_value, max_value):
-        if not (min_value <= value <= max_value):
-            raise ValueError(f'Value must be between {min_value} and {max_value}.')
-        return True
-
