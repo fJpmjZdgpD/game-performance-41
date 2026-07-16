@@ -1,28 +1,14 @@
-def validate_player_id(player_id):
-    if not isinstance(player_id, int) or player_id < 0:
-        raise ValueError("Invalid player ID")
-    return True
+def validate_input(user_input):
+    if not isinstance(user_input, str):
+        raise ValueError('Input must be a string.')
+    if len(user_input) == 0:
+        raise ValueError('Input cannot be empty.')
+    if len(user_input) > 100:
+        raise ValueError('Input must not exceed 100 characters.')
+    return user_input
 
-def validate_score(score):
-    if not isinstance(score, (int, float)) or score < 0:
-        raise ValueError("Invalid score")
-    return True
+def validate_choice(choice, valid_choices):
+    if choice not in valid_choices:
+        raise ValueError(f'Choice must be one of: {valid_choices}')
+    return choice
 
-class GameValidator:
-    @staticmethod
-    def validate_game_data(game_data):
-        if not isinstance(game_data, dict):
-            raise ValueError("Game data must be a dictionary")
-        required_keys = ['player_id', 'score']
-        for key in required_keys:
-            if key not in game_data:
-                raise ValueError(f"Missing required key: {key}")
-        validate_player_id(game_data['player_id'])
-        validate_score(game_data['score'])
-        return True
-
-    @staticmethod
-    def validate_level(level):
-        if not isinstance(level, int) or level < 1:
-            raise ValueError("Level must be a positive integer")
-        return True
