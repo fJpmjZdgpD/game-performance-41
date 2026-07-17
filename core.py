@@ -1,21 +1,32 @@
-import numpy as np
+import random
 
-class GamePerformance:
-    def __init__(self, frame_data):
-        self.frame_data = np.array(frame_data)
-        self.optimized_data = None
+class Game:
+    """Class representing a game instance."""
+    def __init__(self, name: str, max_players: int) -> None:
+        """Initialize the game with a name and max players."""
+        self.name = name
+        self.max_players = max_players
+        self.players = []
 
-    def optimize_frame_data(self):
-        self.optimized_data = np.mean(self.frame_data, axis=0)
+    def add_player(self, player_name: str) -> bool:
+        """Add a player to the game if not full."""
+        if len(self.players) < self.max_players:
+            self.players.append(player_name)
+            return True
+        return False
 
-    def get_average_fps(self):
-        return 1 / np.mean(self.optimized_data) if self.optimized_data is not None else 0
+    def start_game(self) -> str:
+        """Start the game if enough players are present."""
+        if len(self.players) < 2:
+            return "Not enough players to start the game."
+        return f"{self.name} has started with players: {', '.join(self.players)}"
 
-    def analyze_performance(self):
-        self.optimize_frame_data()
-        average_fps = self.get_average_fps()
-        return average_fps
+    def end_game(self) -> str:
+        """End the game and return a summary of players."""
+        return f"Game {self.name} ended. Players: {', '.join(self.players)}"
 
-# Example usage:
-# performance = GamePerformance(frame_data)
-# print(performance.analyze_performance())
+    def get_random_winner(self) -> str:
+        """Select and return a random winner from the players."""
+        if not self.players:
+            return "No players in the game."
+        return random.choice(self.players)
