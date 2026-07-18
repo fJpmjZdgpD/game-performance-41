@@ -1,32 +1,36 @@
 import random
 
+class GameError(Exception):
+    pass
+
 class Game:
-    """Class representing a game instance."""
-    def __init__(self, name: str, max_players: int) -> None:
-        """Initialize the game with a name and max players."""
-        self.name = name
-        self.max_players = max_players
-        self.players = []
+    def __init__(self, max_score):
+        if max_score <= 0:
+            raise GameError('Max score must be greater than zero.')
+        self.max_score = max_score
+        self.current_score = 0
 
-    def add_player(self, player_name: str) -> bool:
-        """Add a player to the game if not full."""
-        if len(self.players) < self.max_players:
-            self.players.append(player_name)
-            return True
-        return False
+    def add_score(self, points):
+        if points < 0:
+            raise GameError('Score points cannot be negative.')
+        self.current_score += points
+        self.check_score()
 
-    def start_game(self) -> str:
-        """Start the game if enough players are present."""
-        if len(self.players) < 2:
-            return "Not enough players to start the game."
-        return f"{self.name} has started with players: {', '.join(self.players)}"
+    def check_score(self):
+        if self.current_score > self.max_score:
+            raise GameError('Current score exceeds max score.')
 
-    def end_game(self) -> str:
-        """End the game and return a summary of players."""
-        return f"Game {self.name} ended. Players: {', '.join(self.players)}"
+    def random_event(self):
+        event = random.choice(['win', 'lose'])
+        if event == 'win':
+            self.add_score(random.randint(1, 10))
+        else:
+            raise GameError('Game lost.')
 
-    def get_random_winner(self) -> str:
-        """Select and return a random winner from the players."""
-        if not self.players:
-            return "No players in the game."
-        return random.choice(self.players)
+    def reset(self):
+        self.current_score = 0
+
+# Example usage:
+if __name__ == '__main__':
+    game = Game(50)
+    game.random_event()
