@@ -1,36 +1,34 @@
-import random
-
-class GameError(Exception):
-    pass
+import time
+import os
 
 class Game:
-    def __init__(self, max_score):
-        if max_score <= 0:
-            raise GameError('Max score must be greater than zero.')
-        self.max_score = max_score
-        self.current_score = 0
+    def __init__(self, name):
+        self.name = name
+        self.start_time = None
+        self.end_time = None
 
-    def add_score(self, points):
-        if points < 0:
-            raise GameError('Score points cannot be negative.')
-        self.current_score += points
-        self.check_score()
+    def start(self):
+        self.start_time = time.time()
 
-    def check_score(self):
-        if self.current_score > self.max_score:
-            raise GameError('Current score exceeds max score.')
+    def end(self):
+        self.end_time = time.time()
 
-    def random_event(self):
-        event = random.choice(['win', 'lose'])
-        if event == 'win':
-            self.add_score(random.randint(1, 10))
-        else:
-            raise GameError('Game lost.')
+    def get_duration(self):
+        if self.start_time and self.end_time:
+            return self.end_time - self.start_time
+        return 0
 
-    def reset(self):
-        self.current_score = 0
+def optimize_loading(resources):
+    return {key: load_resource(key) for key in resources}
 
-# Example usage:
-if __name__ == '__main__':
-    game = Game(50)
-    game.random_event()
+def load_resource(key):
+    path = os.path.join('assets', key)
+    with open(path, 'rb') as file:
+        return file.read()
+
+class ResourceManager:
+    def __init__(self, resources):
+        self.resources = optimize_loading(resources)
+
+    def get_resource(self, key):
+        return self.resources.get(key)
