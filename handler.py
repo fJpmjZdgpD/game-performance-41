@@ -1,23 +1,28 @@
-import time
-import requests
-from requests.exceptions import RequestException
+import json
 
-def retry_request(url, retries=3, backoff=1):
-    for attempt in range(retries):
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return response.json()
-        except RequestException:
-            if attempt < retries - 1:
-                time.sleep(backoff * (2 ** attempt))
-            else:
-                raise
+def load_game_data(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
-if __name__ == '__main__':
-    url = 'https://api.example.com/data'
-    try:
-        data = retry_request(url)
-        print(data)
-    except RequestException as e:
-        print(f'Network request failed: {e}')
+def save_game_data(file_path, data):
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+
+class GameDataHandler:
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.data = self.load_data()
+
+    def load_data(self):
+        return load_game_data(self.file_path)
+
+    def save_data(self):
+        save_game_data(self.file_path, self.data)
+
+    def update_score(self, player_id, score):
+        if player_id in self.data:
+            self.data[player_id]['score'] = score
+            self.save_data()
+
+    def get_player_data(self, player_id):
+        return self.data.get(player_id, None)
