@@ -1,25 +1,18 @@
-import json
+import time
+import requests
 
-class GameDataHandler:
-    @staticmethod
-    def load_data(file_path):
-        with open(file_path, 'r') as file:
-            return json.load(file)
+class NetworkRetryError(Exception):
+    pass
 
-    @staticmethod
-    def save_data(file_path, data):
-        with open(file_path, 'w') as file:
-            json.dump(data, file, indent=4)
-
-    @staticmethod
-    def update_data(file_path, key, value):
-        data = GameDataHandler.load_data(file_path)
-        data[key] = value
-        GameDataHandler.save_data(file_path, data)
-
-    @staticmethod
-    def delete_data(file_path, key):
-        data = GameDataHandler.load_data(file_path)
-        if key in data:
-            del data[key]
-        GameDataHandler.save_data(file_path, data)
+def retry_request(url, max_retries=3, backoff_factor=0.3):
+    attempt = 0
+    while attempt < max_retries:
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response
+        except requests.RequestException:
+            attempt += 1
+            if attempt == max_retries:
+                raise NetworkRetryError(f'Failed to retrieve data from {url} after {max_retries} attempts')
+            time.sleep(backoff_factor * (2 ** attempt))
