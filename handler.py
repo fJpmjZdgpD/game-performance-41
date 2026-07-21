@@ -1,28 +1,27 @@
 import json
 
-def load_game_data(file_path):
-    with open(file_path, 'r') as file:
-        return json.load(file)
+class GameError(Exception):
+    pass
 
-def save_game_data(file_path, data):
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
 
-class GameDataHandler:
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.data = self.load_data()
+def handle_game_error(error):
+    response = {'status': 'error', 'message': str(error)}
+    return json.dumps(response)
 
-    def load_data(self):
-        return load_game_data(self.file_path)
 
-    def save_data(self):
-        save_game_data(self.file_path, self.data)
+def process_game_action(action):
+    try:
+        if action not in ['start', 'stop', 'pause']:
+            raise GameError('Invalid action')
+        # Simulated processing logic goes here
+        return json.dumps({'status': 'success', 'action': action})
+    except GameError as e:
+        return handle_game_error(e)
+    except Exception as e:
+        return handle_game_error(e)
 
-    def update_score(self, player_id, score):
-        if player_id in self.data:
-            self.data[player_id]['score'] = score
-            self.save_data()
 
-    def get_player_data(self, player_id):
-        return self.data.get(player_id, None)
+if __name__ == '__main__':
+    print(process_game_action('start'))  
+    print(process_game_action('invalid_action'))  
+    
