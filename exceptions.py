@@ -1,28 +1,22 @@
-import time
-import random
-
-class NetworkError(Exception):
+class GameError(Exception):
     pass
 
-def retry_on_failure(max_retries=3, delay=1):
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            for attempt in range(max_retries):
-                try:
-                    return func(*args, **kwargs)
-                except NetworkError:
-                    if attempt < max_retries - 1:
-                        time.sleep(delay)
-                    else:
-                        raise
-        return wrapper
-    return decorator
+class InvalidInputError(GameError):
+    def __init__(self, message="Invalid input provided."):
+        self.message = message
+        super().__init__(self.message)
 
-@retry_on_failure(max_retries=5, delay=2)
-def fetch_data(url):
-    if random.choice([True, False]):
-        raise NetworkError('Failed to fetch data')
-    return {'data': 'Sample data from ' + url}
+class ConnectionError(GameError):
+    def __init__(self, message="Failed to connect to the game server."):
+        self.message = message
+        super().__init__(self.message)
 
-if __name__ == '__main__':
-    print(fetch_data('http://example.com'))
+class ResourceNotFoundError(GameError):
+    def __init__(self, resource_name):
+        self.message = f'Resource not found: {resource_name}'
+        super().__init__(self.message)
+
+class TimeoutError(GameError):
+    def __init__(self, message="The operation has timed out."):
+        self.message = message
+        super().__init__(self.message)
