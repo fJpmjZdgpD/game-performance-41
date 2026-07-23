@@ -1,26 +1,33 @@
-import numpy as np
+import sys
+import random
 
-class GameDataProcessor:
-    def __init__(self, data):
-        self.data = data
+class GameProcessor:
+    def __init__(self):
+        self.score = 0
 
-    def normalize_data(self):
-        max_value = np.max(self.data)
-        return self.data / max_value if max_value > 0 else self.data
+    def process_input(self, user_input):
+        if not self.validate_input(user_input):
+            print('Invalid input. Please enter a number between 1 and 10.')
+            return
+        self.score += user_input
+        print(f'Score updated: {self.score}')
 
-    def filter_outliers(self, threshold=1.5):
-        q1 = np.percentile(self.data, 25)
-        q3 = np.percentile(self.data, 75)
-        iqr = q3 - q1
-        lower_bound = q1 - threshold * iqr
-        upper_bound = q3 + threshold * iqr
-        return self.data[(self.data >= lower_bound) & (self.data <= upper_bound)]
+    def validate_input(self, user_input):
+        try:
+            value = int(user_input)
+            return 1 <= value <= 10
+        except ValueError:
+            return False
 
-    def aggregate_scores(self):
-        return np.mean(self.data)
+    def main_loop(self):
+        print('Enter a number between 1 and 10:')
+        while True:
+            user_input = input('> ')
+            if user_input.lower() == 'exit':
+                print('Exiting game. Final score:', self.score)
+                sys.exit(0)
+            self.process_input(user_input)
 
-    def process(self):
-        normalized = self.normalize_data()
-        filtered = self.filter_outliers()
-        avg_score = self.aggregate_scores()  
-        return avg_score, filtered
+if __name__ == '__main__':
+    game = GameProcessor()
+    game.main_loop()
