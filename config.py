@@ -1,37 +1,22 @@
 import json
-import os
+from pathlib import Path
 
-DEFAULT_CONFIG = {
-    'resolution': '1920x1080',
-    'fullscreen': True,
-    'volume': 75,
-    'controls': {
-        'up': 'w',
-        'down': 's',
-        'left': 'a',
-        'right': 'd',
-        'shoot': 'space'
-    }
-}
+def load_config(file_path, defaults):
+    config_path = Path(file_path)
+    if config_path.is_file():
+        with open(config_path) as config_file:
+            config = json.load(config_file)
+    else:
+        config = {}  
+    combined_config = {**defaults, **config}
+    return combined_config
 
-class ConfigLoader:
-    def __init__(self, config_file='config.json'):
-        self.config_file = config_file
-        self.config = self.load_config()
+def save_config(file_path, config):
+    with open(file_path, 'w') as config_file:
+        json.dump(config, config_file, indent=4)
 
-    def load_config(self):
-        if os.path.exists(self.config_file):
-            with open(self.config_file, 'r') as f:
-                return {**DEFAULT_CONFIG, **json.load(f)}
-        return DEFAULT_CONFIG
-
-    def get(self, key, default=None):
-        return self.config.get(key, default)
-
-    def set(self, key, value):
-        self.config[key] = value
-        self.save_config()
-
-    def save_config(self):
-        with open(self.config_file, 'w') as f:
-            json.dump(self.config, f, indent=4)
+# Example usage
+if __name__ == '__main__':
+    defaults = {'setting1': 'value1', 'setting2': 'value2'}
+    config = load_config('config.json', defaults)
+    print(config)
