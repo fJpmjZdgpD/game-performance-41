@@ -1,18 +1,17 @@
 import time
 import requests
 
-class NetworkRetryError(Exception):
+class NetworkError(Exception):
     pass
 
-def retry_request(url, max_retries=3, backoff_factor=0.3):
-    attempt = 0
-    while attempt < max_retries:
+def retry_request(url, retries=3, delay=2, backoff=2):
+    for attempt in range(retries):
         try:
             response = requests.get(url)
             response.raise_for_status()
-            return response
-        except requests.RequestException:
-            attempt += 1
-            if attempt == max_retries:
-                raise NetworkRetryError(f'Failed to retrieve data from {url} after {max_retries} attempts')
-            time.sleep(backoff_factor * (2 ** attempt))
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if attempt == retries - 1:
+                raise NetworkError(f"Network request failed after {retries} attempts: {e}")
+            time.sleep(delay)
+            delay *= backoff
