@@ -1,22 +1,17 @@
 import json
-from pathlib import Path
 
-def load_config(file_path, defaults):
-    config_path = Path(file_path)
-    if config_path.is_file():
-        with open(config_path) as config_file:
-            config = json.load(config_file)
-    else:
-        config = {}  
-    combined_config = {**defaults, **config}
-    return combined_config
+class ConfigLoader:
+    def __init__(self, default_config):
+        self.default_config = default_config
+        self.config = default_config.copy()
 
-def save_config(file_path, config):
-    with open(file_path, 'w') as config_file:
-        json.dump(config, config_file, indent=4)
+    def load(self, filepath):
+        try:
+            with open(filepath, 'r') as file:
+                user_config = json.load(file)
+            self.config.update(user_config)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
 
-# Example usage
-if __name__ == '__main__':
-    defaults = {'setting1': 'value1', 'setting2': 'value2'}
-    config = load_config('config.json', defaults)
-    print(config)
+    def get(self, key, default=None):
+        return self.config.get(key, default)
