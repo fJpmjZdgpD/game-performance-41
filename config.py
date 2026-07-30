@@ -1,39 +1,28 @@
-import json
-import os
+from typing import Dict, Any
 
-DEFAULTS = {
-    'resolution': '1920x1080',
-    'fullscreen': True,
-    'volume': 75,
-    'controls': {
-        'up': 'W',
-        'down': 'S',
-        'left': 'A',
-        'right': 'D'
-    }
-}
+class Config:
+    """Application configuration settings."""
 
-class ConfigLoader:
-    def __init__(self, config_file='config.json'):
-        self.config_file = config_file
-        self.config = self.load_config()
+    def __init__(self, settings: Dict[str, Any]) -> None:
+        """Initialize the Config with provided settings."""
+        self.settings = settings
 
-    def load_config(self):
-        if os.path.isfile(self.config_file):
-            with open(self.config_file) as f:
-                user_config = json.load(f)
-            return self._merge_configs(DEFAULTS, user_config)
-        return DEFAULTS
+    def get(self, key: str) -> Any:
+        """Retrieve a value by key from settings."""
+        return self.settings.get(key)
 
-    def _merge_configs(self, defaults, user_config):
-        config = defaults.copy()
-        config.update(user_config)
-        return config
+    def set(self, key: str, value: Any) -> None:
+        """Set a value for the given key in settings."""
+        self.settings[key] = value
 
-    def get(self, key, default=None):
-        return self.config.get(key, default)
+    def load_from_file(self, filepath: str) -> None:
+        """Load configuration settings from a file."""
+        import json
+        with open(filepath, 'r') as file:
+            self.settings = json.load(file)
 
-    def set(self, key, value):
-        self.config[key] = value
-        with open(self.config_file, 'w') as f:
-            json.dump(self.config, f, indent=4)
+    def save_to_file(self, filepath: str) -> None:
+        """Save configuration settings to a file."""
+        import json
+        with open(filepath, 'w') as file:
+            json.dump(self.settings, file, indent=4)
