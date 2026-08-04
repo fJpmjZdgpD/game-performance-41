@@ -1,28 +1,24 @@
-import sys
+import requests
+import time
 
-class InputError(Exception):
+class NetworkError(Exception):
     pass
 
-def validate_input(user_input):
-    if not isinstance(user_input, str) or not user_input:
-        raise InputError('Invalid input: Must be a non-empty string.')
-    return user_input
-
-def process_user_input(user_input):
-    validate_input(user_input)
-    return f'Processed input: {user_input}'
-
-def main_loop():
-    while True:
-        user_input = input('Enter something (or type quit to exit): ')
-        if user_input.lower() == 'quit':
-            print('Exiting...')
-            break
+def retry_request(url, retries=3, delay=2):
+    for attempt in range(retries):
         try:
-            result = process_user_input(user_input)
-            print(result)
-        except InputError as e:
-            print(e)
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                raise NetworkError('Network request failed after retries')
 
-if __name__ == '__main__':
-    main_loop()
+# Example usage
+def fetch_data(url):
+    try:
+        return retry_request(url)
+    except NetworkError as e:
+        print(e)  # Handle the error as appropriate
