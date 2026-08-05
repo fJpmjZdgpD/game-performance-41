@@ -1,24 +1,24 @@
-import requests
-import time
+import json
+from constants import MAX_LEVEL, INITIAL_SCORE
 
-class NetworkError(Exception):
-    pass
+class GameHandler:
+    def __init__(self):
+        self.score = INITIAL_SCORE
+        self.level = 1
 
-def retry_request(url, retries=3, delay=2):
-    for attempt in range(retries):
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return response.json()
-        except requests.RequestException:
-            if attempt < retries - 1:
-                time.sleep(delay)
-            else:
-                raise NetworkError('Network request failed after retries')
+    def level_up(self):
+        if self.level < MAX_LEVEL:
+            self.level += 1
+            self.score += 100
 
-# Example usage
-def fetch_data(url):
-    try:
-        return retry_request(url)
-    except NetworkError as e:
-        print(e)  # Handle the error as appropriate
+    def reset_game(self):
+        self.score = INITIAL_SCORE
+        self.level = 1
+
+    def get_game_state(self):
+        return json.dumps({'score': self.score, 'level': self.level})
+
+if __name__ == '__main__':
+    game_handler = GameHandler()  
+    game_handler.level_up()  
+    print(game_handler.get_game_state())
