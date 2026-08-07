@@ -1,30 +1,28 @@
-def divide_numbers(numerator, denominator):
-    if denominator == 0:
-        raise ValueError('Denominator cannot be zero.')
-    return numerator / denominator
+def calculate_fps(frames, time):
+    if time > 0:
+        return frames / time
+    return 0
 
-def safely_divide(numerator, denominator):
-    try:
-        return divide_numbers(numerator, denominator)
-    except ValueError as e:
-        return str(e)
+def optimize_resources(resources):
+    optimized_resources = []
+    for resource in resources:
+        if resource.is_active():
+            optimized_resources.append(resource)
+    return optimized_resources
 
-def get_item_from_list(item_list, index):
-    try:
-        return item_list[index]
-    except IndexError:
-        return 'Index out of range'
+def load_assets(asset_list):
+    loaded_assets = {}
+    for asset in asset_list:
+        loaded_assets[asset.name] = asset.load()
+    return loaded_assets
 
-def parse_integer(value):
-    try:
-        return int(value)
-    except (ValueError, TypeError):
-        return 'Invalid integer value'
+def unload_assets(asset_dict):
+    for asset_name, asset in asset_dict.items():
+        asset.unload()
 
-def main():
-    print(safely_divide(10, 0))  # Example of handling division by zero
-    print(get_item_from_list([1, 2, 3], 5))  # Example of handling index error
-    print(parse_integer('abc'))  # Example of handling invalid integer
+def frame_time_logging(frame_time):
+    import logging
+    logging.info(f'Frame time: {frame_time} ms')
 
-if __name__ == '__main__':
-    main()
+def get_delta_time(last_time, current_time):
+    return current_time - last_time
