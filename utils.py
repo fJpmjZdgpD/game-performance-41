@@ -1,28 +1,31 @@
-def calculate_fps(frames, time):
-    if time > 0:
-        return frames / time
-    return 0
+import random
+import numpy as np
 
-def optimize_resources(resources):
-    optimized_resources = []
-    for resource in resources:
-        if resource.is_active():
-            optimized_resources.append(resource)
-    return optimized_resources
+def clamp(value, minimum, maximum):
+    return max(minimum, min(value, maximum))
 
-def load_assets(asset_list):
-    loaded_assets = {}
-    for asset in asset_list:
-        loaded_assets[asset.name] = asset.load()
-    return loaded_assets
 
-def unload_assets(asset_dict):
-    for asset_name, asset in asset_dict.items():
-        asset.unload()
+def lerp(start, end, t):
+    return start + (end - start) * t
 
-def frame_time_logging(frame_time):
-    import logging
-    logging.info(f'Frame time: {frame_time} ms')
 
-def get_delta_time(last_time, current_time):
-    return current_time - last_time
+def random_choice(choices):
+    return random.choice(choices)
+
+
+def calculate_distance(point1, point2):
+    return np.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+
+
+def normalize_vector(vector):
+    magnitude = np.sqrt(sum(coord ** 2 for coord in vector))
+    return [coord / magnitude for coord in vector] if magnitude else vector
+
+
+def average(lst):
+    return sum(lst) / len(lst) if lst else 0
+
+
+def shuffle_list(lst):
+    random.shuffle(lst)
+    return lst
