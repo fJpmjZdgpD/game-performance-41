@@ -1,24 +1,44 @@
 import json
-from constants import MAX_LEVEL, INITIAL_SCORE
+
+class GameError(Exception):
+    pass
 
 class GameHandler:
     def __init__(self):
-        self.score = INITIAL_SCORE
-        self.level = 1
+        self.players = {}
 
-    def level_up(self):
-        if self.level < MAX_LEVEL:
-            self.level += 1
-            self.score += 100
+    def add_player(self, player_id, player_data):
+        if player_id in self.players:
+            raise GameError('Player already exists')
+        self.players[player_id] = player_data
 
-    def reset_game(self):
-        self.score = INITIAL_SCORE
-        self.level = 1
+    def get_player(self, player_id):
+        try:
+            return self.players[player_id]
+        except KeyError:
+            raise GameError('Player not found')
 
-    def get_game_state(self):
-        return json.dumps({'score': self.score, 'level': self.level})
+    def update_player(self, player_id, player_data):
+        if player_id not in self.players:
+            raise GameError('Player not found')
+        self.players[player_id] = player_data
 
-if __name__ == '__main__':
-    game_handler = GameHandler()  
-    game_handler.level_up()  
-    print(game_handler.get_game_state())
+    def remove_player(self, player_id):
+        try:
+            del self.players[player_id]
+        except KeyError:
+            raise GameError('Player not found')
+
+    def to_json(self):
+        return json.dumps(self.players)
+
+    @classmethod
+    def from_json(cls, data):
+        try:
+            players = json.loads(data)
+            instance = cls()
+            for player_id, player_data in players.items():
+                instance.add_player(player_id, player_data)
+            return instance
+        except (json.JSONDecodeError, TypeError):
+            raise GameError('Invalid JSON data')
