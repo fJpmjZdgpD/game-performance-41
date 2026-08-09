@@ -1,24 +1,30 @@
-import re
-
-def validate_email(email: str) -> bool:
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    return bool(re.match(pattern, email))
-
-
-def validate_username(username: str) -> bool:
-    return len(username) >= 3 and len(username) <= 25 and username.isalnum()
+def validate_positive_integer(value):
+    if not isinstance(value, int):
+        raise ValueError('Value must be an integer')
+    if value < 0:
+        raise ValueError('Value must be positive')
+    return True
 
 
-def validate_password(password: str) -> bool:
-    return (len(password) >= 8 and 
-            any(char.isdigit() for char in password) and 
-            any(char.isupper() for char in password))
+def validate_non_empty_string(value):
+    if not isinstance(value, str):
+        raise ValueError('Value must be a string')
+    if not value.strip():
+        raise ValueError('Value must not be empty')
+    return True
 
 
-def validate_age(age: int) -> bool:
-    return 0 <= age <= 120
+def validate_percentage(value):
+    if not isinstance(value, (int, float)):
+        raise ValueError('Value must be a number')
+    if not (0 <= value <= 100):
+        raise ValueError('Value must be between 0 and 100')
+    return True
 
 
-def validate_url(url: str) -> bool:
-    pattern = r'^(https?:\/\/)?([\w.-]+\.[a-zA-Z]{2,}|localhost)(:[0-9]{1,5})?(\/[^\s]*)?$'
-    return bool(re.match(pattern, url))
+def validate_non_negative_float(value):
+    if not isinstance(value, (float, int)):
+        raise ValueError('Value must be a number')
+    if value < 0:
+        raise ValueError('Value must be non-negative')
+    return True
