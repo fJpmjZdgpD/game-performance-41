@@ -1,30 +1,32 @@
-def validate_positive_integer(value):
-    if not isinstance(value, int):
-        raise ValueError('Value must be an integer')
-    if value < 0:
-        raise ValueError('Value must be positive')
-    return True
+import json
 
+class GameDataValidator:
+    @staticmethod
+    def validate_score(score):
+        if not isinstance(score, (int, float)) or score < 0:
+            raise ValueError("Score must be a non-negative number.")
 
-def validate_non_empty_string(value):
-    if not isinstance(value, str):
-        raise ValueError('Value must be a string')
-    if not value.strip():
-        raise ValueError('Value must not be empty')
-    return True
+    @staticmethod
+    def validate_level(level):
+        if not isinstance(level, int) or level < 0:
+            raise ValueError("Level must be a non-negative integer.")
 
+    @staticmethod
+    def validate_player_name(name):
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("Player name must be a non-empty string.")
 
-def validate_percentage(value):
-    if not isinstance(value, (int, float)):
-        raise ValueError('Value must be a number')
-    if not (0 <= value <= 100):
-        raise ValueError('Value must be between 0 and 100')
-    return True
+    @staticmethod
+    def validate_game_data(data):
+        GameDataValidator.validate_score(data.get('score', 0))
+        GameDataValidator.validate_level(data.get('level', 0))
+        GameDataValidator.validate_player_name(data.get('player_name', ''))
 
-
-def validate_non_negative_float(value):
-    if not isinstance(value, (float, int)):
-        raise ValueError('Value must be a number')
-    if value < 0:
-        raise ValueError('Value must be non-negative')
-    return True
+    @staticmethod
+    def from_json(json_string):
+        try:
+            data = json.loads(json_string)
+            GameDataValidator.validate_game_data(data)
+            return data
+        except (ValueError, json.JSONDecodeError) as e:
+            raise ValueError(f"Invalid game data: {e}")
