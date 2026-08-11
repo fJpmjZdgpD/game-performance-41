@@ -1,15 +1,43 @@
-def validate_input(user_input):
-    if isinstance(user_input, str) and user_input.strip():
-        return True
-    return False
+from typing import List, Tuple
 
-def main_loop():
-    while True:
-        user_input = input('Enter command: ')
-        if validate_input(user_input):
-            process_input(user_input)
-        else:
-            print('Invalid input, please try again.')
+def calculate_fps(frames: int, seconds: float) -> float:
+    """
+    Calculate frames per second (FPS).
 
-if __name__ == '__main__':
-    main_loop()
+    Parameters:
+    frames (int): The number of frames rendered.
+    seconds (float): The time in seconds over which the frames were rendered.
+
+    Returns:
+    float: The calculated FPS.
+    """
+    if seconds <= 0:
+        raise ValueError("Seconds must be greater than zero.")
+    return frames / seconds
+
+
+def average(lst: List[float]) -> float:
+    """
+    Calculate the average of a list of numbers.
+
+    Parameters:
+    lst (List[float]): A list of float numbers.
+
+    Returns:
+    float: The average of the numbers in the list.
+    """
+    if not lst:
+        raise ValueError("List must not be empty.")
+    return sum(lst) / len(lst)
+
+
+def get_screen_resolution() -> Tuple[int, int]:
+    """
+    Get the current screen resolution.
+
+    Returns:
+    Tuple[int, int]: A tuple containing the screen width and height.
+    """
+    import screeninfo
+    monitor = screeninfo.get_monitors()[0]
+    return monitor.width, monitor.height
