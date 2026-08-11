@@ -2,32 +2,25 @@ import json
 import os
 
 class ConfigLoader:
-    def __init__(self, default_config):
-        self.default_config = default_config
-        self.config = default_config.copy()
+    def __init__(self, default_config_path, user_config_path):
+        self.default_config = self.load_config(default_config_path)
+        self.user_config = self.load_config(user_config_path) or {}
+        self.config = self.merge_configs(self.default_config, self.user_config)
 
-    def load_from_file(self, file_path):
-        if os.path.isfile(file_path):
-            with open(file_path, 'r') as file:
-                file_config = json.load(file)
-                self.config.update(file_config)
+    def load_config(self, path):
+        if not os.path.exists(path):
+            return None
+        with open(path) as config_file:
+            return json.load(config_file)
+
+    def merge_configs(self, default, user):
+        merged = default.copy()
+        merged.update(user)
+        return merged
 
     def get(self, key, default=None):
         return self.config.get(key, default)
 
-    def set(self, key, value):
-        self.config[key] = value
-
-# Example usage
 if __name__ == '__main__':
-    default_config = {
-        'volume': 50,
-        'resolution': '1920x1080',
-        'fullscreen': True
-    }
-    loader = ConfigLoader(default_config)
-    loader.load_from_file('config.json')
-    print(loader.get('volume'))
-    print(loader.get('fullscreen'))
-    loader.set('volume', 75)
-    print(loader.get('volume'))
+    loader = ConfigLoader('default_config.json', 'user_config.json')
+    print(loader.get('setting1', 'default_value'))
