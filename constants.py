@@ -1,20 +1,20 @@
-import time
+class GameSettings:
+    SCREEN_WIDTH = 1280
+    SCREEN_HEIGHT = 720
+    FPS = 60
+    PLAYER_SPEED = 5
+    ENEMY_SPEED = 3
+    MAX_ENEMIES = 10
 
-RETRY_LIMIT = 5
-RETRY_DELAY = 2
+class Colors:
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
 
-class NetworkError(Exception):
-    pass
-
-
-def retryable_network_operation(func):
-    def wrapper(*args, **kwargs):
-        for attempt in range(RETRY_LIMIT):
-            try:
-                return func(*args, **kwargs)
-            except NetworkError:
-                if attempt < RETRY_LIMIT - 1:
-                    time.sleep(RETRY_DELAY)
-                else:
-                    raise
-    return wrapper
+class GameStates:
+    MAIN_MENU = 'main_menu'
+    RUNNING = 'running'
+    PAUSED = 'paused'
+    GAME_OVER = 'game_over'
