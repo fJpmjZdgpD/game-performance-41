@@ -1,34 +1,19 @@
-import time
-import os
+import sys
+from validators import validate_input
 
-class Game:
-    def __init__(self, name):
-        self.name = name
-        self.start_time = None
-        self.end_time = None
+def main_loop():
+    while True:
+        user_input = input('Enter a command: ')
+        if validate_input(user_input):
+            process_command(user_input)
+        else:
+            print('Invalid input. Please try again.')
 
-    def start(self):
-        self.start_time = time.time()
+def process_command(command):
+    if command == 'exit':
+        print('Exiting...')
+        sys.exit(0)
+    print(f'Processing command: {command}')
 
-    def end(self):
-        self.end_time = time.time()
-
-    def get_duration(self):
-        if self.start_time and self.end_time:
-            return self.end_time - self.start_time
-        return 0
-
-def optimize_loading(resources):
-    return {key: load_resource(key) for key in resources}
-
-def load_resource(key):
-    path = os.path.join('assets', key)
-    with open(path, 'rb') as file:
-        return file.read()
-
-class ResourceManager:
-    def __init__(self, resources):
-        self.resources = optimize_loading(resources)
-
-    def get_resource(self, key):
-        return self.resources.get(key)
+if __name__ == '__main__':
+    main_loop()
