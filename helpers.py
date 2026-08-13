@@ -1,43 +1,24 @@
-from typing import List, Tuple
+import json
 
-def calculate_fps(frames: int, seconds: float) -> float:
-    """
-    Calculate frames per second (FPS).
-
-    Parameters:
-    frames (int): The number of frames rendered.
-    seconds (float): The time in seconds over which the frames were rendered.
-
-    Returns:
-    float: The calculated FPS.
-    """
-    if seconds <= 0:
-        raise ValueError("Seconds must be greater than zero.")
-    return frames / seconds
+def load_game_data(file_path):
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 
-def average(lst: List[float]) -> float:
-    """
-    Calculate the average of a list of numbers.
-
-    Parameters:
-    lst (List[float]): A list of float numbers.
-
-    Returns:
-    float: The average of the numbers in the list.
-    """
-    if not lst:
-        raise ValueError("List must not be empty.")
-    return sum(lst) / len(lst)
+def save_game_data(file_path, data):
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
 
 
-def get_screen_resolution() -> Tuple[int, int]:
-    """
-    Get the current screen resolution.
+def update_game_score(game_data, player_id, score):
+    player = game_data.get('players', {}).get(player_id)
+    if player:
+        player['score'] += score
+    else:
+        raise ValueError('Player not found')
 
-    Returns:
-    Tuple[int, int]: A tuple containing the screen width and height.
-    """
-    import screeninfo
-    monitor = screeninfo.get_monitors()[0]
-    return monitor.width, monitor.height
+
+def get_top_players(game_data, count=5):
+    players = game_data.get('players', {}).values()
+    sorted_players = sorted(players, key=lambda p: p['score'], reverse=True)
+    return sorted_players[:count]
