@@ -1,24 +1,28 @@
-import json
-
-def load_game_data(file_path):
-    with open(file_path, 'r') as file:
-        return json.load(file)
+import random
+import math
 
 
-def save_game_data(file_path, data):
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
+def calculate_distance(point_a, point_b):
+    return math.sqrt((point_b[0] - point_a[0]) ** 2 + (point_b[1] - point_a[1]) ** 2)
 
 
-def update_game_score(game_data, player_id, score):
-    player = game_data.get('players', {}).get(player_id)
-    if player:
-        player['score'] += score
-    else:
-        raise ValueError('Player not found')
+def random_choice(choices):
+    return random.choice(choices)
 
 
-def get_top_players(game_data, count=5):
-    players = game_data.get('players', {}).values()
-    sorted_players = sorted(players, key=lambda p: p['score'], reverse=True)
-    return sorted_players[:count]
+def clamp(value, min_value, max_value):
+    return max(min(value, max_value), min_value)
+
+
+def lerp(start, end, t):
+    return start + (end - start) * t
+
+
+def tile_position(position, tile_size):
+    return (int(position[0] // tile_size[0]), int(position[1] // tile_size[1]))
+
+
+def calculate_angle(point_a, point_b):
+    delta_x = point_b[0] - point_a[0]
+    delta_y = point_b[1] - point_a[1]
+    return math.degrees(math.atan2(delta_y, delta_x))
