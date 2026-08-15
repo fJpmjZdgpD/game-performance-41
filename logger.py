@@ -1,27 +1,32 @@
 import logging
 
-class CustomLogger:
-    def __init__(self, name):
-        self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG)
-        handler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
 
-    def debug(self, message):
-        self.logger.debug(message)
+def setup_logger(name: str) -> logging.Logger:
+    """Create and configure a logger."""
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
-    def info(self, message):
-        self.logger.info(message)
 
-    def warning(self, message):
-        self.logger.warning(message)
+def log_info(logger: logging.Logger, message: str) -> None:
+    """Log an info message."""
+    logger.info(message)
 
-    def error(self, message):
-        self.logger.error(message)
 
-    def critical(self, message):
-        self.logger.critical(message)
+def log_warning(logger: logging.Logger, message: str) -> None:
+    """Log a warning message."""
+    logger.warning(message)
 
-logger = CustomLogger(__name__)
+
+def log_error(logger: logging.Logger, message: str) -> None:
+    """Log an error message."""
+    logger.error(message)
+
+
+def log_debug(logger: logging.Logger, message: str) -> None:
+    """Log a debug message."""
+    logger.debug(message)
