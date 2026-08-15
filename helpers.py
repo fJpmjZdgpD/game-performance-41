@@ -1,28 +1,26 @@
-import random
-import math
+import json
+import os
+
+def load_game_data(file_path):
+    if not os.path.isfile(file_path):
+        raise FileNotFoundError(f'File not found: {file_path}')
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 
-def calculate_distance(point_a, point_b):
-    return math.sqrt((point_b[0] - point_a[0]) ** 2 + (point_b[1] - point_a[1]) ** 2)
+def save_game_data(file_path, data):
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
 
 
-def random_choice(choices):
-    return random.choice(choices)
+def get_player_score(player_data):
+    return player_data.get('score', 0)
 
 
-def clamp(value, min_value, max_value):
-    return max(min(value, max_value), min_value)
+def update_player_score(player_data, score):
+    player_data['score'] = score
+    return player_data
 
 
-def lerp(start, end, t):
-    return start + (end - start) * t
-
-
-def tile_position(position, tile_size):
-    return (int(position[0] // tile_size[0]), int(position[1] // tile_size[1]))
-
-
-def calculate_angle(point_a, point_b):
-    delta_x = point_b[0] - point_a[0]
-    delta_y = point_b[1] - point_a[1]
-    return math.degrees(math.atan2(delta_y, delta_x))
+def filter_high_scores(players_data, threshold):
+    return [player for player in players_data if player.get('score', 0) > threshold]
