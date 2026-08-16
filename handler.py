@@ -1,26 +1,26 @@
-import sys
+import json
+from typing import Any, Dict, List
 
-class GameHandler:
-    def __init__(self):
-        self.valid_inputs = {'move', 'attack', 'defend', 'run'}
+class GameDataHandler:
+    def __init__(self, data: Dict[str, Any]) -> None:
+        self.data = data
 
-    def validate_input(self, user_input):
-        return user_input in self.valid_inputs
+    def to_json(self) -> str:
+        return json.dumps(self.data)
 
-    def main_loop(self):
-        while True:
-            user_input = input('Enter your action: ').strip().lower()
-            if not self.validate_input(user_input):
-                print('Invalid input, please try again.')
-                continue
-            self.process_action(user_input)
+    def from_json(self, json_str: str) -> None:
+        self.data = json.loads(json_str)
 
-    def process_action(self, action):
-        print(f'Processing action: {action}')  
+    def get_game_stats(self, game_id: str) -> Dict[str, Any]:
+        return self.data.get(game_id, {})
 
-if __name__ == '__main__':
-    handler = GameHandler()
-    try:
-        handler.main_loop()
-    except KeyboardInterrupt:
-        sys.exit('Game terminated by user.')
+    def update_game_stats(self, game_id: str, stats: Dict[str, Any]) -> None:
+        self.data[game_id] = stats
+
+    def list_games(self) -> List[str]:
+        return list(self.data.keys())
+
+# Sample usage:
+# handler = GameDataHandler({'game1': {'score': 100}})
+# handler.update_game_stats('game2', {'score': 150})
+# print(handler.to_json())
