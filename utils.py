@@ -1,31 +1,26 @@
-import random
-import numpy as np
+import json
+from typing import Any, Dict, List
 
-def clamp(value, minimum, maximum):
-    return max(minimum, min(value, maximum))
-
-
-def lerp(start, end, t):
-    return start + (end - start) * t
+def load_game_data(file_path: str) -> Dict[str, Any]:
+    with open(file_path, 'r') as file:
+        return json.load(file)
 
 
-def random_choice(choices):
-    return random.choice(choices)
+def save_game_data(file_path: str, data: Dict[str, Any]) -> None:
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
 
 
-def calculate_distance(point1, point2):
-    return np.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
+def filter_high_scores(scores: List[Dict[str, Any]], threshold: int) -> List[Dict[str, Any]]:
+    return [score for score in scores if score['score'] >= threshold]
 
 
-def normalize_vector(vector):
-    magnitude = np.sqrt(sum(coord ** 2 for coord in vector))
-    return [coord / magnitude for coord in vector] if magnitude else vector
+def calculate_average_score(scores: List[Dict[str, Any]]) -> float:
+    if not scores:
+        return 0.0
+    total_score = sum(score['score'] for score in scores)
+    return total_score / len(scores)
 
 
-def average(lst):
-    return sum(lst) / len(lst) if lst else 0
-
-
-def shuffle_list(lst):
-    random.shuffle(lst)
-    return lst
+def format_player_stats(player: Dict[str, Any]) -> str:
+    return f"{player['name']} - Score: {player['score']}, Level: {player['level']}"
