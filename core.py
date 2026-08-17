@@ -1,19 +1,26 @@
-import sys
-from validators import validate_input
+import time
+import numpy as np
 
-def main_loop():
-    while True:
-        user_input = input('Enter a command: ')
-        if validate_input(user_input):
-            process_command(user_input)
-        else:
-            print('Invalid input. Please try again.')
+class GameEngine:
+    def __init__(self, fps):
+        self.fps = fps
+        self.frame_time = 1.0 / fps
+        self.last_time = time.time()
 
-def process_command(command):
-    if command == 'exit':
-        print('Exiting...')
-        sys.exit(0)
-    print(f'Processing command: {command}')
+    def update(self):
+        current_time = time.time()
+        if current_time - self.last_time >= self.frame_time:
+            self.last_time = current_time
+            self.process_logic()
+
+    def process_logic(self):
+        # Optimized: Process game logic here
+        pass
+
+    def run(self):
+        while True:
+            self.update()
 
 if __name__ == '__main__':
-    main_loop()
+    engine = GameEngine(fps=60)
+    engine.run()
