@@ -1,32 +1,25 @@
 import logging
 
+class GameLogger:
+    def __init__(self, name, level=logging.INFO):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(level)
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
 
-def setup_logger(name: str) -> logging.Logger:
-    """Create and configure a logger."""
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
+    def debug(self, msg):
+        self.logger.debug(msg)
 
+    def info(self, msg):
+        self.logger.info(msg)
 
-def log_info(logger: logging.Logger, message: str) -> None:
-    """Log an info message."""
-    logger.info(message)
+    def warning(self, msg):
+        self.logger.warning(msg)
 
+    def error(self, msg):
+        self.logger.error(msg)
 
-def log_warning(logger: logging.Logger, message: str) -> None:
-    """Log a warning message."""
-    logger.warning(message)
-
-
-def log_error(logger: logging.Logger, message: str) -> None:
-    """Log an error message."""
-    logger.error(message)
-
-
-def log_debug(logger: logging.Logger, message: str) -> None:
-    """Log a debug message."""
-    logger.debug(message)
+    def critical(self, msg):
+        self.logger.critical(msg)
