@@ -1,29 +1,19 @@
-import re
+def is_valid_username(username):
+    return isinstance(username, str) and 3 <= len(username) <= 20
 
-def validate_username(username):
-    if not isinstance(username, str):
-        raise ValueError('Username must be a string')
-    if not (3 <= len(username) <= 20):
-        raise ValueError('Username must be between 3 and 20 characters')
-    if not re.match('^[a-zA-Z0-9_]+$', username):
-        raise ValueError('Username can only contain alphanumeric characters and underscores')
-    return True
+def is_valid_email(email):
+    import re
+    regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(regex, email) is not None
 
-def validate_email(email):
-    if not isinstance(email, str):
-        raise ValueError('Email must be a string')
-    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    if not re.match(email_regex, email):
-        raise ValueError('Invalid email format')
-    return True
+def is_valid_score(score):
+    return isinstance(score, int) and 0 <= score <= 100
 
-def validate_password(password):
-    if not isinstance(password, str):
-        raise ValueError('Password must be a string')
-    if len(password) < 8:
-        raise ValueError('Password must be at least 8 characters')
-    if not re.search('[A-Z]', password):
-        raise ValueError('Password must include at least one uppercase letter')
-    if not re.search('[0-9]', password):
-        raise ValueError('Password must include at least one digit')
-    return True
+def is_valid_level(level):
+    return isinstance(level, int) and level > 0
+
+def is_valid_password(password):
+    return isinstance(password, str) and len(password) >= 8
+
+def is_valid_game_id(game_id):
+    return isinstance(game_id, str) and len(game_id) == 36
